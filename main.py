@@ -1,4 +1,5 @@
 import discord
+from discord import file
 #from discord import errors
 #from discord import user
 from discord.ext import commands
@@ -7,7 +8,10 @@ import os
 import requests
 from io import BytesIO
 
-TOKEN="ODk5MTAzMTQxMjAxNTc1OTg2.YWt5DQ.qBMjqbW8r85MzxUSdA7Bu2BhSO0"
+file = open('token.txt', 'r')
+TOKEN = file.read()
+
+#TOKEN="ODk5MTAzMTQxMjAxNTc1OTg2.YWt5DQ.qBMjqbW8r85MzxUSdA7Bu2BhSO0"
 client = commands.Bot(command_prefix = "u!", intents = discord.Intents.all())
 
 @client.event
@@ -100,5 +104,7 @@ async def blend(ctx):
 #error handler
 @client.event
 async def on_command_error(ctx, error):
-    await ctx.send(f"An error occured: {str(error)}")    
-client.run(TOKEN)
+    await ctx.send(f"An error occured: {str(error)}")
+
+client.run(str(TOKEN))
+file.close()
