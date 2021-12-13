@@ -11,7 +11,6 @@ from io import BytesIO
 file = open('token.txt', 'r')
 TOKEN = file.read()
 
-#TOKEN="ODk5MTAzMTQxMjAxNTc1OTg2.YWt5DQ.qBMjqbW8r85MzxUSdA7Bu2BhSO0"
 client = commands.Bot(command_prefix = "u!", intents = discord.Intents.all())
 
 @client.event
