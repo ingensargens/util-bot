@@ -37,7 +37,7 @@ async def banner(ctx, userID=""):
         await ctx.send("No banner or color to return.")
     
 #avatar
-@client.command(aliases = "av")
+@client.command(aliases = ["av"])
 async def avatar(ctx, userID=""):
     if(userID == ""):
         userID = ctx.author.id
