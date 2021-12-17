@@ -1,8 +1,9 @@
 import discord
-from discord import file
+#from discord import file
 #from discord import errors
 #from discord import user
 from discord.ext import commands
+#pillow
 from PIL import Image, ImageOps
 import os
 import requests
@@ -49,6 +50,20 @@ async def avatar(ctx, userID=""):
     embed.set_image(url = user.avatar.url)
     await ctx.send(embed = embed)
 
+#emote to png
+@client.command(aliases = ['emoji'])
+async def emote(ctx, emote):
+    if(emote == ""):
+        #or emote != discord.Emoji
+        return await ctx.send("Emote not found. Please provide an emote to transform.")
+    else:
+        emoteArr = emote.split(':')
+        emoteID = emoteArr[2]
+        var = f'https://cdn.discordapp.com/emojis/{emoteID}.png?size=80'
+        arr2 = var.split('>')
+        newUrl = (str(arr2[0] + arr2[1]))
+        await ctx.send(newUrl) 
+        
 #returns a pixelated image of an input attached image
 @client.command()
 async def pixelate(ctx,scale=16):
