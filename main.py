@@ -4,9 +4,10 @@ import discord
 #from discord import user
 from discord.ext import commands
 #pillow
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageDraw
 import os
 import requests
+#import numpy as np
 from io import BytesIO
 
 file = open('token.txt', 'r')
@@ -14,54 +15,44 @@ TOKEN = file.read()
 
 client = commands.Bot(command_prefix = "u!", intents = discord.Intents.all())
 
+#client startup
 @client.event
 async def on_ready():
     print(f'logged in as {client.user}')
 
+#banner command removed due to discord update
 
-#banner
-@client.command()
-async def banner(ctx, userID=""):
-    #user defined
-    if(userID == ""):
-        userID = ctx.author.id
-    user = await client.fetch_user(userID)
-
-    #if color
-    if(user.accent_color):
-        embed = discord.Embed(title = user, color = user.accent_color)
-        await ctx.send(embed=embed)
-    #if banner gif/image
-    elif(user.banner):
-        embed = discord.Embed(title = user, color = discord.Color.dark_blue())
-        embed.set_image(url = user.banner.url)
-        await ctx.send(embed = embed) 
-    #neither    
-    else:
-        await ctx.send("No banner or color to return.")
-    
 #avatar
 @client.command(aliases = ["av"])
 async def avatar(ctx, userID=""):
+    #if no user id, user id is authors id
     if(userID == ""):
         userID = ctx.author.id
+    #fetching the user using user id    
     user = await client.fetch_user(userID)
+    #embed creation
     embed = discord.Embed(title = user, color = discord.Color.dark_blue())
-    embed.set_image(url = user.avatar.url)
+    #embed image is set to avatar
+    embed.set_image(url = user.avatar_url)
+    #sending image
     await ctx.send(embed = embed)
 
 #emote to png
 @client.command(aliases = ['emoji'])
 async def emote(ctx, emote):
+    #if there is no emote arg
     if(emote == ""):
         #or emote != discord.Emoji
         return await ctx.send("Emote not found. Please provide an emote to transform.")
     else:
+        #split the emote string into an array
         emoteArr = emote.split(':')
         emoteID = emoteArr[2]
+        #get the png, size 80, using emotes id
         var = f'https://cdn.discordapp.com/emojis/{emoteID}.png?size=80'
         arr2 = var.split('>')
         newUrl = (str(arr2[0] + arr2[1]))
+        #send the png as a url
         await ctx.send(newUrl) 
         
 #returns a pixelated image of an input attached image
@@ -106,19 +97,27 @@ async def blend(ctx):
     img1 = Image.open(BytesIO(image1.content))
     image2 = requests.get(ctx.message.attachments[1])
     img2 = Image.open(BytesIO(image2.content))
+    #setting a tuple to the width and height of size
     img1w, img1h = img1.size
     img2w, img2h = img2.size
+    #if the heights and width of the images are the same, blend
     if((img1w * img1h) == (img2w * img2h)):
         out = Image.blend(img1, img2, alpha)
+        #save the image, send it, and delete it
         out.save('result.png')
         await ctx.send(file = discord.File('result.png'))
         os.remove('result.png')
+    #else, return a message preventing an error if not same size    
     else:
         return await ctx.send("**Images are not the same size.** Please provide images with same pixel size.")
-#error handler
+
+
+#error handler - sends errors through the bot
 @client.event
 async def on_command_error(ctx, error):
     await ctx.send(f"An error occured: {str(error)}")
 
 client.run(str(TOKEN))
 file.close()
+
+    
