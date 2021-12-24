@@ -6,6 +6,7 @@ from discord.ext import commands
 #pillow
 from PIL import Image, ImageOps, ImageDraw
 import os
+import time
 import requests
 #import numpy as np
 from io import BytesIO
@@ -25,6 +26,8 @@ async def on_ready():
 #avatar
 @client.command(aliases = ["av"])
 async def avatar(ctx, userID=""):
+    #starting process timer
+    start = time.time()
     #if no user id, user id is authors id
     if(userID == ""):
         userID = ctx.author.id
@@ -32,11 +35,16 @@ async def avatar(ctx, userID=""):
     user = await client.fetch_user(userID)
     #sending the url in either a gif or png format as size 1024
     await ctx.send(user.avatar_url_as(static_format='png', size=1024))
-
+    #ending process timer
+    end = time.time()
+    #sending process total time
+    await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
 
 #emote to png
 @client.command(aliases = ['emoji'])
 async def emote(ctx, emote):
+    #starting process timer
+    start = time.time()
     #if there is no emote arg
     if(emote == ""):
         #or emote != discord.Emoji
@@ -46,15 +54,21 @@ async def emote(ctx, emote):
         emoteArr = emote.split(':')
         emoteID = emoteArr[2]
         #get the png, size 80, using emotes id
-        var = f'https://cdn.discordapp.com/emojis/{emoteID}.png?size=80'
+        var = f'https://cdn.discordapp.com/emojis/{emoteID}.png?size=1024'
         arr2 = var.split('>')
         newUrl = (str(arr2[0] + arr2[1]))
         #send the png as a url
-        await ctx.send(newUrl) 
+        await ctx.send(newUrl)
+        #ending process timer
+        end = time.time()
+        #sending process total time
+        await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
         
 #returns a pixelated image of an input attached image
 @client.command()
 async def pixelate(ctx,scale=16):
+    #starting process timer
+    start = time.time()
     #get the png by requesting the url
     response = requests.get(ctx.message.attachments[0])
     #open the image
@@ -69,10 +83,16 @@ async def pixelate(ctx,scale=16):
     await ctx.send(file = discord.File('result.png'))
     #remove image
     os.remove('result.png')
+    #ending process timer
+    end = time.time()
+    #sending process total time
+    await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
 
 #image to bl + wh
 @client.command(aliases = ['gray', 'grey', 'greyscale'])
 async def grayscale(ctx):
+    #starting process timer
+    start = time.time()
     #get the png by requesting the url
     response = requests.get(ctx.message.attachments[0])
     #open the image
@@ -84,10 +104,17 @@ async def grayscale(ctx):
     await ctx.send(file = discord.File('result.png'))
     #remove image
     os.remove('result.png')
+    #ending process timer
+    end = time.time()
+    #sending process total time
+    await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
 
 #blending 2 images
 @client.command()
 async def blend(ctx):
+    #starting process timer
+    start = time.time()
+    #alpha (combination amount) variable
     alpha = 0.5
     #get the png by requesting the url
     image1 = requests.get(ctx.message.attachments[0])
@@ -104,6 +131,10 @@ async def blend(ctx):
         out.save('result.png')
         await ctx.send(file = discord.File('result.png'))
         os.remove('result.png')
+        #ending process timer
+        end = time.time()
+        #sending process total time
+        await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
     #else, return a message preventing an error if not same size    
     else:
         return await ctx.send("**Images are not the same size.** Please provide images with same pixel size.")
