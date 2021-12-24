@@ -30,12 +30,9 @@ async def avatar(ctx, userID=""):
         userID = ctx.author.id
     #fetching the user using user id    
     user = await client.fetch_user(userID)
-    #embed creation
-    embed = discord.Embed(title = user, color = discord.Color.dark_blue())
-    #embed image is set to avatar
-    embed.set_image(url = user.avatar_url)
-    #sending image
-    await ctx.send(embed = embed)
+    #sending the url in either a gif or png format as size 1024
+    await ctx.send(user.avatar_url_as(static_format='png', size=1024))
+
 
 #emote to png
 @client.command(aliases = ['emoji'])
