@@ -11,4 +11,4 @@ Util bot is a personal bot used for testing with the pycord api and image upload
 
 * grayscale (parameters: an attached image) [aliases = 'gray', 'grey', 'greyscale']
 
-* blend (parameters: 2 different attached images, both with the same pixel size) 
+* blend (parameters: 2 different attached images, **both with the same pixel size**) 
