@@ -1,6 +1,6 @@
 # util-bot
 
-Util bot is a personal bot used for testing with the pycord api and image uploading. [Prefix: u!]
+Util bot is a personal bot used for testing with the pycord api and image uploading. [Prefix: u!] **readme is still a wip**
 
 ## Current functions:
 * avatar: (parameters: userID - optional) If no user id is provided, returns the authors' discord avatar. Otherwise, returns the discord avatar of the user provided in the userID. If the avatar is animated, it is returned in the `.gif` format.
