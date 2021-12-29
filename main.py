@@ -62,7 +62,7 @@ async def emote(ctx, emote):
         #ending process timer
         end = time.time()
         #sending process total time
-        await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
+        return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
         
 #returns a pixelated image of an input attached image
 @client.command()
@@ -86,7 +86,7 @@ async def pixelate(ctx,scale=16):
     #ending process timer
     end = time.time()
     #sending process total time
-    await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
+    return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
 
 #image to bl + wh
 @client.command(aliases = ['gray', 'grey', 'greyscale'])
@@ -107,7 +107,7 @@ async def grayscale(ctx):
     #ending process timer
     end = time.time()
     #sending process total time
-    await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
+    return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
 
 #blending 2 images
 @client.command()
@@ -134,10 +134,12 @@ async def blend(ctx):
         #ending process timer
         end = time.time()
         #sending process total time
-        await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
+        return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
     #else, return a message preventing an error if not same size    
     else:
         return await ctx.send("**Images are not the same size.** Please provide images with same pixel size.")
+
+#next project - color overlay
 
 
 #error handler - sends errors through the bot
