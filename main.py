@@ -4,7 +4,7 @@ import discord
 #from discord import user
 from discord.ext import commands
 #pillow
-from PIL import Image, ImageOps, ImageDraw
+from PIL import Image, ImageOps, ImageDraw, ImageFilter
 import os
 import time
 import requests
@@ -15,6 +15,31 @@ file = open('token.txt', 'r')
 TOKEN = file.read()
 
 client = commands.Bot(command_prefix = "u!", intents = discord.Intents.all())
+
+#custom color function defined
+def color_select(c):
+    #new match case from python 3.10+
+    match c:
+        case 'red':
+            return 'red'
+        case 'orange':
+            return 'orange'
+        case 'yellow':
+            return 'yellow'
+        case 'green':
+            return 'green'
+        case 'blue':
+            return 'blue'
+        case 'purple':
+            return 'purple'
+        case 'pink':
+            return 'pink'
+        case 'black':
+            return 'black'
+        case 'white':
+            return 'white'             
+        case _:
+            return '**Color unrecognized. Please try again**.'
 
 #client startup
 @client.event
@@ -140,7 +165,27 @@ async def blend(ctx):
         return await ctx.send("**Images are not the same size.** Please provide images with same pixel size.")
 
 #next project - color overlay
-
+@client.command(aliases = ['overlay', 'colorize'])
+async def tint(ctx, color = 'black'):
+    #starting process timer
+    start = time.time()
+    #requesting the url of the image
+    image1 = requests.get(ctx.message.attachments[0])
+    img1 = Image.open(BytesIO(image1.content)).convert("L")
+    #colorizing the image using a custom function
+    result = ImageOps.colorize(img1, black = color_select(color), white ="white")
+    #save the image, send it, and delete it
+    result.save('result.png')
+    await ctx.send(file = discord.File('result.png'))
+    os.remove('result.png')
+    #ending process timer
+    end = time.time()
+    #sending process total time
+    return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
+    
+#next project - contour
+#@client.command()
+# async def contour():
 
 #error handler - sends errors through the bot
 @client.event
@@ -149,5 +194,3 @@ async def on_command_error(ctx, error):
 
 client.run(str(TOKEN))
 file.close()
-
-    
