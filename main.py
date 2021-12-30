@@ -184,9 +184,23 @@ async def tint(ctx, color = 'black'):
     return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
     
 #next project - contour
-#@client.command()
-# async def contour():
-
+@client.command(aliases = ['outline'])
+async def contour(ctx):
+    #starting process timer
+    start = time.time()
+    #get the png by requesting the url
+    image1 = requests.get(ctx.message.attachments[0])
+    img1 = Image.open(BytesIO(image1.content))
+    #result created with contour
+    result = img1.filter(ImageFilter.CONTOUR)
+    #save the image, send it, and delete it
+    result.save('result.png')
+    await ctx.send(file = discord.File('result.png'))
+    os.remove('result.png')
+    #ending process timer
+    end = time.time()
+    #sending process total time
+    return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')     
 #error handler - sends errors through the bot
 @client.event
 async def on_command_error(ctx, error):
