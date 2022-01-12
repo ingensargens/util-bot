@@ -8,7 +8,7 @@ from PIL import Image, ImageOps, ImageDraw, ImageFilter
 import os
 import time
 import requests
-#import numpy as np
+import numpy as np
 from io import BytesIO
 
 file = open('token.txt', 'r')
@@ -41,10 +41,22 @@ def color_select(c):
         case _:
             return '**Color unrecognized. Please try again**.'
 
-#client startup
+#function converting bytes to its equivalant counterpart 
+def convert_bytes(num):
+    """
+    this function will convert bytes to MB.... GB... etc
+    """
+    for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
+        if num < 1024.0:
+            return "%3.1f %s" % (num, x)
+        num /= 1024.0
+
 @client.event
 async def on_ready():
-    print(f'logged in as {client.user}')
+    t = time.localtime()
+    current_time = time.strftime("%H:%M:%S", t)
+    #startup time logging
+    print(f'logged in as {client.user} - {current_time}')
 
 #banner command removed due to discord update
 
@@ -59,7 +71,7 @@ async def avatar(ctx, userID=""):
     #fetching the user using user id    
     user = await client.fetch_user(userID)
     #sending the url in either a gif or png format as size 1024
-    await ctx.send(user.avatar_url_as(static_format='png', size=1024))
+    await ctx.send(user.avatar_url_as(format='png', size=1024))
     #ending process timer
     end = time.time()
     #sending process total time
@@ -164,7 +176,7 @@ async def blend(ctx):
     else:
         return await ctx.send("**Images are not the same size.** Please provide images with same pixel size.")
 
-#next project - color overlay
+#color overlay
 @client.command(aliases = ['overlay', 'colorize'])
 async def tint(ctx, color = 'black'):
     #starting process timer
@@ -183,7 +195,7 @@ async def tint(ctx, color = 'black'):
     #sending process total time
     return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
     
-#next project - contour
+#contour
 @client.command(aliases = ['outline'])
 async def contour(ctx):
     #starting process timer
@@ -200,7 +212,32 @@ async def contour(ctx):
     #ending process timer
     end = time.time()
     #sending process total time
-    return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')     
+    return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
+
+#information about an image
+@client.command()
+async def stats(ctx):
+    #starting process timer
+    start = time.time()
+    #get the png by requesting the url
+    image1 = requests.get(ctx.message.attachments[0])
+    img1 = Image.open(BytesIO(image1.content))
+    #creating a discord embed containing information about the attached image
+    embed=discord.Embed(title="Image information: ", color=0xad1457)
+    embed.add_field(name = "Image name", value=ctx.message.attachments[0].filename, inline=False)
+    embed.add_field(name="Format: ", value=img1.format, inline=False)
+    #embed.add_field(name="Pixel size: ", value=f'{img1.size}', inline=False)
+    embed.add_field(name="Width: ", value=img1.width, inline=False)
+    embed.add_field(name="Height: ", value=img1.height, inline=False)
+    embed.add_field(name="Mode: ", value=img1.mode, inline=False)
+    embed.add_field(name="File size: ", value=convert_bytes(ctx.message.attachments[0].size), inline=False)
+    #sending the discord embed
+    await ctx.send(embed=embed)
+    #ending process timer
+    end = time.time()
+    #sending process total time
+    return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
+     
 #error handler - sends errors through the bot
 @client.event
 async def on_command_error(ctx, error):
