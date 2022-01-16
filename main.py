@@ -237,7 +237,42 @@ async def stats(ctx):
     end = time.time()
     #sending process total time
     return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
-     
+
+#circular crop - still a work in process
+@client.command()
+async def circle(ctx):
+    #starting process timer
+    start = time.time()
+    #get the png by requesting the url
+    image1 = requests.get(ctx.message.attachments[0])
+    img = Image.open(BytesIO(image1.content))
+    nH,nW = img.size
+    #must be 
+    if(nH == nW):
+        #how to circular crop an image - from https://www.geeksforgeeks.org/cropping-an-image-in-a-circular-way-using-python/
+        img = img.resize((400, 400), Image.ANTIALIAS)
+        height, width = img.size
+        lum_img = Image.new('L', [height,width] , 0)
+        draw = ImageDraw.Draw(lum_img)
+        draw.pieslice([(0,0), (height,width)], 0, 360, fill = 255, outline = "white")
+        img_arr = np.array(img)
+        lum_img_arr = np.array(lum_img)
+        #(Image.fromarray(lum_img_arr)).save('test1.png')
+        final_img_arr = np.dstack((img_arr,lum_img_arr))
+        # await ctx.send(str(final_img_arr))
+        res = Image.fromarray(final_img_arr).convert('RGBA')
+        res.save('result.png')
+        #save the image, send it, and delete 
+        await ctx.send(file = discord.File('result.png'))
+        os.remove('result.png')
+        #ending process timer
+        end = time.time()
+        #sending process total time
+        return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
+    else: 
+        #error message if not same dimensions
+        return await ctx.send(f'**Image height and width are not the same size.** Please provide an image with same height and width.')    
+
 #error handler - sends errors through the bot
 @client.event
 async def on_command_error(ctx, error):
