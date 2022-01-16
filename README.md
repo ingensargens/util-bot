@@ -2,7 +2,7 @@
 
 Util bot is a personal bot used for testing with the pycord api and image uploading. [Prefix: u!] 
 
-## If you get an error saying `Command raised an exception: IndexError: list index out of range`, you did not include any/enough images attached.
+Important: If you get an error saying `Command raised an exception: IndexError: list index out of range`, you did not include any/enough images attached in your message.
 
 ## Current functions:
 * avatar: (parameters: userID - optional) If no user id is provided, returns the authors' discord avatar. Otherwise, returns the discord avatar of the user provided in the userID. If the avatar is animated, it is returned in the `.gif` format.
