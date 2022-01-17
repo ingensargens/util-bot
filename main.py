@@ -110,7 +110,7 @@ async def pixelate(ctx,scale=16):
     #get the png by requesting the url
     response1 = requests.get(ctx.message.attachments[0])
     #open the image
-    img1 = Image.open(BytesIO(response.content))         
+    img1 = Image.open(BytesIO(response1.content))         
     #resize image
     imgSmall = img1.resize((scale,scale),resample=Image.BILINEAR)
     #new image back to main size
