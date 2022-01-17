@@ -1,3 +1,4 @@
+from unittest import result
 import discord
 #from discord import file
 #from discord import errors
@@ -107,13 +108,13 @@ async def pixelate(ctx,scale=16):
     #starting process timer
     start = time.time()
     #get the png by requesting the url
-    response = requests.get(ctx.message.attachments[0])
+    response1 = requests.get(ctx.message.attachments[0])
     #open the image
-    img = Image.open(BytesIO(response.content))         
+    img1 = Image.open(BytesIO(response.content))         
     #resize image
-    imgSmall = img.resize((scale,scale),resample=Image.BILINEAR)
+    imgSmall = img1.resize((scale,scale),resample=Image.BILINEAR)
     #new image back to main size
-    result = imgSmall.resize(img.size,Image.NEAREST)
+    result = imgSmall.resize(img1.size,Image.NEAREST)
     #save image
     result.save('result.png')
     #send
@@ -131,10 +132,11 @@ async def grayscale(ctx):
     #starting process timer
     start = time.time()
     #get the png by requesting the url
-    response = requests.get(ctx.message.attachments[0])
+    response1 = requests.get(ctx.message.attachments[0])
     #open the image
-    img = Image.open(BytesIO(response.content))  
-    result = ImageOps.grayscale(img)
+    img1 = Image.open(BytesIO(response1.content))  
+    #converting the image grayscale
+    result = ImageOps.grayscale(img1)
     #save image
     result.save('result.png')
     #send
@@ -154,10 +156,10 @@ async def blend(ctx):
     #alpha (combination amount) variable
     alpha = 0.5
     #get the png by requesting the url
-    image1 = requests.get(ctx.message.attachments[0])
-    img1 = Image.open(BytesIO(image1.content))
-    image2 = requests.get(ctx.message.attachments[1])
-    img2 = Image.open(BytesIO(image2.content))
+    response1 = requests.get(ctx.message.attachments[0])
+    img1 = Image.open(BytesIO(response1.content))
+    response2 = requests.get(ctx.message.attachments[1])
+    img2 = Image.open(BytesIO(response2.content))
     #setting a tuple to the width and height of size
     img1w, img1h = img1.size
     img2w, img2h = img2.size
@@ -220,8 +222,8 @@ async def stats(ctx):
     #starting process timer
     start = time.time()
     #get the png by requesting the url
-    image1 = requests.get(ctx.message.attachments[0])
-    img1 = Image.open(BytesIO(image1.content))
+    response1 = requests.get(ctx.message.attachments[0])
+    img1 = Image.open(BytesIO(response1.content))
     #creating a discord embed containing information about the attached image
     embed=discord.Embed(title="Image information: ", color=0xad1457)
     embed.add_field(name = "Image name", value=ctx.message.attachments[0].filename, inline=False)
@@ -244,8 +246,8 @@ async def circle(ctx):
     #starting process timer
     start = time.time()
     #get the png by requesting the url
-    image1 = requests.get(ctx.message.attachments[0])
-    img = Image.open(BytesIO(image1.content))
+    response1 = requests.get(ctx.message.attachments[0])
+    img = Image.open(BytesIO(response1.content))
     nH,nW = img.size
     #must be 
     if(nH == nW):
