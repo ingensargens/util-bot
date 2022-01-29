@@ -1,4 +1,4 @@
-from unittest import result
+from colorthief import ColorThief as ct
 import discord
 #from discord import file
 #from discord import errors
@@ -16,6 +16,13 @@ file = open('token.txt', 'r')
 TOKEN = file.read()
 
 client = commands.Bot(command_prefix = "u!", intents = discord.Intents.all())
+
+#function for converting rbg tuples to hex
+def rgb_to_hex(rgb):
+    """
+    this function converts an rgb tuple to hex
+    """
+    return '%02x%02x%02x' % rgb
 
 #custom color function defined
 def color_select(c):
@@ -240,7 +247,7 @@ async def stats(ctx):
     #sending process total time
     return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
 
-#circular crop - still a work in process
+#circular crop
 @client.command()
 async def circle(ctx):
     #starting process timer
@@ -273,7 +280,37 @@ async def circle(ctx):
         return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
     else: 
         #error message if not same dimensions
-        return await ctx.send(f'**Image height and width are not the same size.** Please provide an image with same height and width.')    
+        return await ctx.send(f'**Image height and width are not the same size.** Please provide an image with same height and width.')
+
+@client.command()
+async def color_stats(ctx):
+    #starting process timer
+    start = time.time()
+    #get the png by requesting the url
+    response = requests.get(ctx.message.attachments[0])
+    #open the image
+    img1 = Image.open(BytesIO(response.content))
+    img1.convert('RGBA').save('result.png')
+    #manipulating img1 wither Color Thief (ct) library
+    CT_Img = ct('result.png')
+    #dominant color ct function
+    dominant_color = CT_Img.get_color(quality=100)
+    #embed init
+    embed = discord.Embed(title=ctx.message.attachments[0].filename, description="Main 5 colors of the image:", color=discord.Color.from_rgb(dominant_color[0], dominant_color[1], dominant_color[2]))
+    #get_palette ct function
+    main_colors = CT_Img.get_palette(color_count=5, quality=100)
+    #adding top 5 colors as hex and rgb values to an embed
+    for i in main_colors:
+        embed.add_field(name="RGB Tuple:", value=str(i), inline=False)
+        embed.add_field(name='Hex color value:', value=rgb_to_hex(i), inline=False)
+    #sending embed    
+    await ctx.send(embed=embed)
+    #deleting image
+    os.remove('result.png')    
+    #ending process timer
+    end = time.time()
+    #sending process total time
+    return await ctx.send(f'`Process finished in: {round(end - start, 4)} seconds.`')
 
 #error handler - sends errors through the bot
 @client.event

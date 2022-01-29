@@ -21,4 +21,6 @@ Important: If you get an error saying `Command raised an exception: IndexError: 
 
 * stats (parameters: an attached image) Returns an embed with information about the attached image, including width, height, and file size in appropriate bytes.
 
-* circle (parameters: an attached **`.png` or `.jpg`** image with the **same pixel size**) Returns a 400x400 version of the image as a circle with a transparent background. Note: image must be **uploaded, not copy pasted.** If you get an error like '`TypeError: Cannot handle this data type: (1, 1, 5), |u1`', your image is not compatible. This function is still a work in progress. 
+* circle (parameters: an attached **`.png` or `.jpg`** image with the **same pixel size**) Returns a 400x400 version of the image as a circle with a transparent background. Note: image must be **uploaded, not copy pasted.** If you get an error like '`TypeError: Cannot handle this data type: (1, 1, 5), |u1`', your image is not compatible.
+
+* color_stats (parameters: an attached image) Returns an embed with the top five colors in an image, with the embed color being the most dominant one. Read more about the Color Thief library [here](https://github.com/fengsp/color-thief-py).
